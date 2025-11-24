@@ -11,6 +11,11 @@ This project monitors a **live TV stream**, creates **transcripts**, and makes a
 - Sends updates live to webpage using WebSocket
 - Shows timestamp, transcript, summary
 
+
+### ScreenShot:
+<img width="1894" height="827" alt="Screenshot 2025-11-24 212814" src="https://github.com/user-attachments/assets/915ad6e5-5c14-4d77-b5d3-228d7c7286e8" />
+
+
 ## Requirements Completed
 
 ✔ Live feed capture  
