@@ -104,9 +104,6 @@ monitor_agent/
 FFmpeg prints a lot of messages.  
 If we don’t redirect them to a log file, **Python hangs** because the output buffer gets full.
 
-**Simple explanation:**  
-“FFmpeg always prints. If we don’t redirect it, Python hangs.”
-
 ## Issues I Faced
 
 - API credits finished → moved to local models  
