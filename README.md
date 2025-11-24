@@ -1,204 +1,119 @@
-# Monitor Agent Prototype - Assignment Submission
+# Monitor Agent Prototype – Assignment
 
-## Assignment Objective
+This project monitors a **live TV stream**, creates **transcripts**, and makes a **short summary every 1 minute**.
 
-Build a system that monitors a live TV feed from https://www.livenowfox.com/live and generates transcripts + AI summaries every minute.
+## What It Does
 
-## What I Built
+- Captures LiveNOW Fox stream (m3u8)
+- Cuts audio into 60-second files
+- Converts audio → text using Whisper
+- Generates short summary using BART
+- Sends updates live to webpage using WebSocket
+- Shows timestamp, transcript, summary
 
-This app watches the live TV stream, extracts audio every 60 seconds, converts speech to text, and creates short summaries. Everything updates in real-time on a webpage.
+## Requirements Completed
 
-## Assignment Requirements Met
+✔ Live feed capture  
+✔ 60s audio segments  
+✔ Whisper transcription  
+✔ BART summarization  
+✔ Real-time UI updates  
+✔ Start/Stop buttons  
+✔ Simple frontend  
 
-✅ **Live Feed**: Using FFmpeg to capture stream from LiveNOW Fox (m3u8 URL)  
-✅ **Audio Extraction**: Continuous extraction, saved as 60-second segments  
-✅ **Transcription**: Speech-to-text every 1 minute using Whisper  
-✅ **AI Summary**: Short summaries (15-20 words) using BART  
-✅ **Output**: Displays Timestamp, Transcript, and Summary  
-✅ **UI**: Simple frontend with Start/Stop buttons  
-✅ **Real-time**: WebSocket updates, appears ~70-80 seconds after being spoken on TV
+## Why I Used These Tools
 
-## Why I Used These Technologies
-
-### AI Models
-I tried using OpenAI Whisper API and Google Gemini API first, but both ran out of free credits. So I switched to:
-- **Whisper (local)** - runs on my computer, completely free
-- **BART (Facebook)** - also runs locally, no API needed
-
-This way the whole system is free to run and doesn't need internet after initial setup.
-
-### Backend
-- **Django** - because it's easy to set up and has good documentation
-- **Django Channels** - for WebSocket support (real-time updates)
-- **FFmpeg** - industry standard for handling video/audio streams
+I tried OpenAI and Gemini first but free credits got over.  
+So I used **local AI models** (Whisper + BART) which are free and run offline.
 
 ## Tech Stack
 
-- Backend: Django + Django REST Framework
-- Real-time: Django Channels (WebSockets)
-- Stream Processing: FFmpeg
-- AI Models: Whisper (transcription) + BART (summarization)
-- Frontend: HTML, CSS, JavaScript
-- Database: SQLite (default Django)
+- Django + DRF  
+- Django Channels (WebSockets)  
+- FFmpeg  
+- Whisper + BART  
+- HTML / CSS / JavaScript  
+- SQLite  
 
 ## Project Structure
 
 ```
 monitor_agent/
-├── manage.py
-├── requirements.txt
-├── monitor_agent/          # Project settings
-│   ├── settings.py
-│   ├── urls.py
-│   └── asgi.py            # WebSocket config
-├── monitor/                # Main app
-│   ├── views.py           # API endpoints (start/stop/status)
-│   ├── consumers.py       # WebSocket handler
-│   ├── stream_handler.py  # FFmpeg + processing logic
-│   ├── transcriber.py     # Whisper integration
-│   └── summarizer.py      # BART integration
-├── templates/
-│   └── index.html         # Frontend UI
-├── static/
-│   ├── css/style.css
-│   └── js/script.js
-└── media/segments/        # Audio files saved here
+│── monitor/ (processing code)
+│── templates/index.html
+│── static/
+│── media/segments/
 ```
 
 ## How to Run
 
-### Prerequisites
-1. Python 3.11+
-2. FFmpeg (install using `winget install -e --id Gyan.FFmpeg`)
-
-### Installation Steps
-
-1. **Clone/Download the project**
-
-2. **Create virtual environment**:
+1. Install Python 3.11+ and FFmpeg  
+2. Create venv  
    ```
    python -m venv venv
    venv\Scripts\activate
    ```
-
-3. **Install dependencies**:
+3. Install requirements  
    ```
    pip install -r requirements.txt
    ```
-   Note: First time will download AI models (~2GB), takes 5-10 minutes
-
-4. **Navigate to project folder**:
-   ```
-   cd monitor_agent
-   ```
-
-5. **Run migrations**:
+4. Run migrations  
    ```
    python manage.py migrate
    ```
-
-6. **Start the server**:
+5. Start server  
    ```
    python manage.py runserver
    ```
+6. Open browser: http://localhost:8000  
+7. Click **Start Monitoring**  
+8. First output comes after ~60 sec  
 
-7. **Open browser**: Go to `http://localhost:8000`
+## How It Works (Simple)
 
-8. **Click "Start Monitoring"** and wait ~60 seconds for first result
+1. User clicks Start  
+2. FFmpeg records the live stream  
+3. Creates 60-second audio segment  
+4. Whisper → transcribes  
+5. BART → summarizes  
+6. WebSocket → sends to frontend  
+7. UI updates the table  
+8. Repeat for next segment  
+9. User clicks Stop → FFmpeg stops  
 
-9. **Stop**: Press `Ctrl+C` in terminal or click "Stop Monitoring" button
+## Data Flow (Step-by-Step)
 
-## How It Works (Simple Explanation)
+- User opens browser  
+- Loads `index.html`  
+- WebSocket connects  
+- User clicks **Start**  
+- `POST /api/start/`  
+- FFmpeg starts recording  
+- Creates 60s segment  
+- Monitor thread detects new file  
+- Whisper transcribes  
+- BART summarizes  
+- WebSocket sends update  
+- Frontend shows result  
+- User clicks **Stop**  
+- `POST /api/stop/`  
+- FFmpeg + thread stop  
 
-1. **User clicks "Start Monitoring"**
-   - Browser sends request to Django server
-   - Server starts FFmpeg process
+## FFmpeg Blocking Note
 
-2. **FFmpeg captures live stream**
-   - Downloads audio from LiveNOW Fox stream
-   - Saves 60-second chunks as MP3 files
+FFmpeg prints a lot of messages.  
+If we don’t redirect them to a log file, **Python hangs** because the output buffer gets full.
 
-3. **Python monitors for new files**
-   - Background thread checks for new audio files every 5 seconds
+## Issues I Faced
 
-4. **When new file found**:
-   - Whisper converts audio → text
-   - BART summarizes text → short summary
-   - WebSocket sends data to browser
+- API credits finished → moved to local models  
+- FFmpeg blocking → fixed with log file  
+- Stream URL finding  
+- WebSocket setup  
+- Large model downloads  
 
-5. **Browser displays result**
-   - New row added to table with timestamp, transcript, summary
+## Submission
 
-## Performance
-
-- **Latency**: ~70-80 seconds from "spoken on TV" to "appears on screen"
-  - 60 seconds: segment duration
-  - 5-10 seconds: Whisper transcription
-  - 2-3 seconds: BART summarization
-  - 5 seconds: monitoring loop delay
-
-- **Resource Usage**:
-  - RAM: ~4GB (for AI models)
-  - CPU: Moderate (depends on PC)
-
-## Challenges I Faced
-
-1. **API Quota Issues**: OpenAI and Gemini ran out of credits, had to switch to local models
-2. **FFmpeg Deadlock**: Output buffer was filling up, fixed by redirecting to log file
-3. **Stream URL**: Original URL was dead, found working alternative
-4. **WebSocket Setup**: Had to configure Django Channels properly
-5. **Model Download**: BART model is 1.6GB, takes time on first run
-
-## Improvements I Could Make
-
-- Add database to store history (currently only shows live data)
-- Use GPU for faster AI processing
-- Add video preview alongside transcript
-- Better error handling and retry logic
-- Clean up old audio files automatically
-
-## Screenshots
-
-(UI shows table with Timestamp, Transcript, and Summary columns. Start/Stop buttons at top.)
-
-## Testing
-
-Tested with:
-- Live stream running for 10+ minutes
-- Multiple start/stop cycles
-- Verified real-time updates via WebSocket
-- Checked transcript accuracy against actual TV audio
-
-## Notes
-
-- First run downloads AI models, be patient
-- Audio segments saved in `media/segments/` folder
-- Check `ffmpeg.log` if stream issues
-- Works offline after initial setup
-
-## Submission Details
-
-- **Student**: Vanshul
-- **Deadline**: Tuesday, 9:30 AM
-- **Assignment**: Monitor Agent Prototype
-
----
-
-### Troubleshooting
-
-**Nothing showing up?**
-- Wait at least 60 seconds after clicking Start
-- Check terminal for errors
-- Look at ffmpeg.log file
-
-**Server won't start?**
-- Activate virtual environment: `venv\Scripts\activate`
-- Install dependencies: `pip install -r requirements.txt`
-
-**Out of memory?**
-- Close other apps
-- AI models need ~4GB RAM
-
----
-
-Built using free/open-source tools only. No API costs.
+**Name:** Vanshul  
+**Assignment:** Monitor Agent Prototype  
+**Deadline:** Tuesday, 9:30 AM  
