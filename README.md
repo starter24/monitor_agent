@@ -115,7 +115,13 @@ If we don’t redirect them to a log file, **Python hangs** because the output b
 - FFmpeg blocking → fixed with log file  
 - Stream URL finding  
 - WebSocket setup  
-- Large model downloads  
+- Large model downloads 
+
+### Deployment Notes
+
+- Tried deploying on PythonAnywhere and Railway, but local models (Whisper + BART) are too large for free tiers.
+- Railway hits RAM limits, PythonAnywhere has no WebSockets, and free plans lack GPU/storage.
+- Using OpenAI/Gemini APIs would have made deployment easier, but local models require more resources.
 
 ## Submission
 
