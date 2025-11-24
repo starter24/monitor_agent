@@ -149,17 +149,9 @@ monitor_agent/
 4. **WebSocket Setup**: Had to configure Django Channels properly
 5. **Model Download**: BART model is 1.6GB, takes time on first run
 
-## Improvements I Could Make
-
-- Add database to store history (currently only shows live data)
-- Use GPU for faster AI processing
-- Add video preview alongside transcript
-- Better error handling and retry logic
-- Clean up old audio files automatically
-
 ## Screenshots
+![Uploading Screenshot 2025-11-24 212814.png…]()
 
-(UI shows table with Timestamp, Transcript, and Summary columns. Start/Stop buttons at top.)
 
 ## Testing
 
