@@ -32,7 +32,12 @@ class StreamMonitor:
 
         # Start FFmpeg
         # ffmpeg -i URL -f segment -segment_time 60 -c:a libmp3lame -b:a 128k -vn segment_%03d.mp3
-        ffmpeg_path = r'C:\Users\Vanshul\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.0.1-full_build\bin\ffmpeg.exe'
+        # Use environment variable or system PATH for deployment, local path for development
+        ffmpeg_path = os.getenv('FFMPEG_PATH', 'ffmpeg')  # Railway/production uses 'ffmpeg' from PATH
+        if ffmpeg_path == 'ffmpeg' and os.name == 'nt':  # Windows local development
+            local_ffmpeg = r'C:\Users\Vanshul\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.0.1-full_build\bin\ffmpeg.exe'
+            if os.path.exists(local_ffmpeg):
+                ffmpeg_path = local_ffmpeg
         command = [
             ffmpeg_path,
             '-i', self.stream_url,

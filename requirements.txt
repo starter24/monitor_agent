@@ -1,11 +1,12 @@
 django
 djangorestframework
 channels
+channels-redis
 daphne
+gunicorn
 ffmpeg-python
 requests
 python-dotenv
 openai-whisper
 transformers
 torch
-
