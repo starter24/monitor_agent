@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TV Monitor Agent</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TV Monitor Agent</h1>
+            <div class="controls">
+                <button id="startBtn" class="btn start">Start Monitoring</button>
+                <button id="stopBtn" class="btn stop" disabled>Stop Monitoring</button>
+                <span id="status" class="status">Status: Idle</span>
+            </div>
+        </header>
+
+        <main>
+            <div class="feed-container">
+                <h2>Live Feed Transcripts & Summaries</h2>
+                <table id="monitorTable">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Transcript</th>
+                            <th>AI Summary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Updates will appear here -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
