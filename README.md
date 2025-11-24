@@ -150,7 +150,8 @@ monitor_agent/
 5. **Model Download**: BART model is 1.6GB, takes time on first run
 
 ## Screenshots
-![Uploading Screenshot 2025-11-24 212814.png…]()
+
+<img width="1894" height="827" alt="Screenshot 2025-11-24 212814" src="https://github.com/user-attachments/assets/48e84e45-0d0e-4a0a-a343-374109263338" />
 
 
 ## Testing
